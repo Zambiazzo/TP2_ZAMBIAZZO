@@ -1,0 +1,70 @@
+---
+title: "TP2_GIT"
+author: "Yanina Zambiazzo"
+date: "22/9/2021"
+output: html_document
+---
+
+
+```{r}
+library(tidyverse)
+library(stringr)
+library(rvest)
+```
+
+#COTIZACIÓN DEL DÓLAR#
+
+Comenzaré cargando 
+
+```{r}
+url <- "https://www.perfil.com/tags/Cotizaci%C3%B3n-Dolar-Hoy" 
+```
+
+
+
+```{r}
+valores_Monedas <- read_html(url) %>% 
+  html_nodes(xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "dbventa", " " ))] | //*[contains(concat( " ", @class, " " ), concat( " ", "dbcompra", " " ))]') %>%
+  html_text() %>%
+  str_replace_all ("[^[:alnum:]]", "")
+```
+
+
+```{r}
+Nombre_Moneda <- read_html(url) %>%
+  html_nodes(xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "db", " " ))]') %>%
+  html_text2()
+```
+
+
+```{r}
+Tabla_Unificada <- tibble(
+  Nombre_Moneda,
+ valores_Monedas)
+```
+
+
+```{r}
+Cotizaciones <- Tabla_Unificada %>% 
+  slice(2:nrow(Tabla_Unificada)) 
+```
+
+
+```{r}
+names(Cotizaciones)
+```
+
+```{r}
+head(Cotizaciones)
+```
+
+```{r}
+summary(Cotizaciones)
+```
+
+```{r}
+str (Cotizaciones) 
+```
+
+
+Se tomo los valores correspondientes al Dolar Blue
